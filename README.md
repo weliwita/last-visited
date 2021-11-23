@@ -1,4 +1,6 @@
 # last-visited
-Chrome extension to remember last visited page of a website
+Chrome extension to remember last visited page of a website.
+
+BookMark app that enables you to set a dynamic bookmark for a site where it remember your last visted url.
 
 
