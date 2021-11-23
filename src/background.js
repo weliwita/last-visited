@@ -1,8 +1,4 @@
 
-chrome.runtime.onInstalled.addListener(() => {
-  
-});
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.method == "isTracked")
   {
@@ -21,7 +17,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           }
         }
         if(found){
-          sendResponse({status: true, url : items[foundKey]});
+          sendResponse({status: true, value : items[foundKey]});
         }else{
           sendResponse({status: false});
         }
@@ -29,32 +25,4 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     });
     return true;
   }
-  else
-    sendResponse({}); // snub them.
 });
-
-
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//   if (request.method == "getLocalStorage")
-//     sendResponse({data: localStorage[request.key]});
-//   else
-//     sendResponse({}); // snub them.
-// });
-// chrome.webNavigation.onBeforeNavigate.addListener(function(data) {
-//   if (typeof data)
-//     console.log("url"+ data.url);
-//   else
-//     console.error('inHandlerError'+ e);
-// });
-
-// function injectedFunction() {
-//   document.body.style.backgroundColor = 'orange';
-// }
-
-// chrome.action.onClicked.addListener((tab) => {
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     function: injectedFunction
-//   });
-// });
-
