@@ -25,9 +25,15 @@
     },
     "content_scripts": [
       {
-        "matches": ["https://*/*"],
+        "matches": ["<all_urls>"],
         "css": ["content-script-styles.css"],
         "js": ["common-script.js","content-script.js"]
+      }
+    ],
+    "web_accessible_resources":[
+      {
+        "resources": [ "fonts/Roboto-Regular.ttf"],
+        "matches": [ "<all_urls>" ]
       }
     ]
 }

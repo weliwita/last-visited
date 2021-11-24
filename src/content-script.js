@@ -1,45 +1,61 @@
 let firstVisitString =  `
-<div class="last-visited">
+<div class="last-visit">
 
-<p class="message">Last-Visit tracks a previously visited url for this site. 
-</p>
-<button id="btn-ignore" class="btn">Ignore For this session</button>
-<button id="btn-visit" class="btn">Go to last-visited</button>
-<button id="btn-update" class="btn">Update last-visited</button>
-<button id="btn-remove" class="btn">Remove from last-visit</button>
+<span class="message">Last-Visit 
+</span>
+<div class="actions">
+    <span id="btn-visit" class="btn">Go to Last Visited Page</span>
+    <span id="btn-update" class="btn">Track This Page </span>
+    <span id="btn-ignore" class="btn">Pause Tracking</span>
+    <span id="btn-remove" class="btn">Remove</span>
+</div>
+<div id="btn-close" class="close">
+    <div class="icon"></div>
+</div>
 </div>
 `;
 
 let trackString =  `
-<div class="last-visited">
+<div class="last-visit">
 
-<p class="message">Last-Visit auto saved this page as last visited. 
-</p>
-<button id="btn-ignore" class="btn">Ignore tracking for this session</button>
-<button id="btn-remove" class="btn">Remove site from last-visit</button>
+<span class="message">Last-Visit - Tracking 
+</span>
+<div class="actions">
+    <span id="btn-ignore" class="btn">Pause</span>
+    <span id="btn-remove" class="btn">Remove</span>
+</div>
+<div id="btn-close" class="close">
+    <div class="icon"></div>
+</div>
 </div>
 `;
 
 let ignoredString =  `
-<div class="last-visited">
+<div class="last-visit">
 
-<p class="message">Last-Visit ignored for this session. 
-</p>
-<button id="btn-update" class="btn">Update last-visited(cancel ignore)</button>
-<button id="btn-remove" class="btn">Remove site from last-visit</button>
+<span class="message">Last-Visit - Paused 
+</span>
+<div class="actions">
+    <span id="btn-update" class="btn"> Track </span>
+    <span id="btn-remove" class="btn"> Remove </span>
+</div>
+<div id="btn-close" class="close">
+    <div class="icon"></div>
+</div>
 </div>
 `;
 
-let last_visit_session = window.sessionStorage;
 
-chrome.runtime.sendMessage({method: "isTracked", url: window.location.hostname}, function(response) {
+
+let last_visit_session = window.sessionStorage;
+let splitUrl = new SplitUrl(window.location.href);
+
+chrome.runtime.sendMessage({method: "isTracked", key: splitUrl.key}, function(response) {
     debugger;
     if(response.status == true){
-
-        let splitUrl = new SplitUrl(window.location.href);
         let ignoreSession = JSON.parse(sessionStorage.getItem('last-visit::ignoreSession'));
         let firstVisit = !JSON.parse(sessionStorage.getItem('last-visit::visited'));
-        let trackedUrl = response.value == splitUrl.value;
+        let trackedUrl = response.data.href == splitUrl.href;
         if(firstVisit){
             last_visit_session.setItem("last-visit::visited", true );
         }
@@ -62,13 +78,14 @@ chrome.runtime.sendMessage({method: "isTracked", url: window.location.hostname},
             btnIgnore.addEventListener('click', function (event){
                 console.log('Ignore Button Clicked');
                 last_visit_session.setItem("last-visit::ignoreSession", true );
+                location.reload();
             });
 
         let btnVisit = document.querySelector('#btn-visit');
         if(btnVisit)
             btnVisit.addEventListener('click', function (event){
                 console.log('Visit Button Clicked');
-                window.location.href = response.value;
+                window.location.href = response.data.href;
             });
         
         let btnUpdate = document.querySelector('#btn-update');
@@ -77,6 +94,7 @@ chrome.runtime.sendMessage({method: "isTracked", url: window.location.hostname},
                 console.log('Update Button Clicked');
                 last_visit_session.setItem("last-visit::ignoreSession", false );
                 setPageUrl();
+                location.reload();
             });
         
         let btnRemove = document.querySelector('#btn-remove');
@@ -86,13 +104,11 @@ chrome.runtime.sendMessage({method: "isTracked", url: window.location.hostname},
                 //remove from list.
         });
 
+        let btnClose = document.querySelector('#btn-close');
+        btnClose.addEventListener('click', function (event){
+            console.log('close Button Clicked');
+            var x = document.querySelector(".last-visit");
+            x.style.display = "none";
+        });
     }
 });
-
-
-
-
-
-
-
-
